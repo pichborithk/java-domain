@@ -1,0 +1,90 @@
+plugins {
+  id 'java'
+  id 'com.vanniktech.maven.publish' version '0.36.0'
+  id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'io.github.pichborithk'
+version = '0.0.1'
+
+ext {
+  protocVersion = '3.25.8'
+  grpcVersion = '1.77.1'
+  jacksonVersion = '2.19.4'
+  lombokVersion = '1.18.42'
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+
+  withSourcesJar()
+}
+
+repositories {
+  mavenCentral()
+}
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+dependencies {
+  // gRPC
+  implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+  implementation "io.grpc:grpc-stub:${grpcVersion}"
+  implementation "io.grpc:grpc-services:${grpcVersion}"
+
+  compileOnly "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+  compileOnly "org.projectlombok:lombok:${lombokVersion}"
+  annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:${protocVersion}"
+  }
+  plugins {
+    grpc {
+      artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+    }
+  }
+  generateProtoTasks {
+    all()*.plugins {
+      grpc
+    }
+  }
+}
+
+mavenPublishing {
+  coordinates(group.toString(), name.toString(), version.toString())
+
+  pom {
+    name = 'domain'
+    description = 'Domain library for pichborith java projects.'
+    inceptionYear = '2026'
+    url = 'https://github.com/pichborithk/java-domain/'
+    licenses {
+      license {
+        name = 'The Apache License, Version 2.0'
+        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        distribution = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+      }
+    }
+    developers {
+      developer {
+        id = 'pichborithk'
+        name = 'Pichborith Kong'
+        url = 'https://github.com/pichborithk/'
+      }
+    }
+    scm {
+      url = 'https://github.com/pichborithk/java-domain/'
+      connection = 'scm:git:git://github.com/pichborithk/java-domain.git'
+      developerConnection = 'scm:git:ssh://git@github.com/pichborithk/java-domain.git'
+    }
+  }
+}
