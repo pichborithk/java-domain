@@ -1,4 +1,4 @@
-package dev.pichborith.domain.user;
+package dev.pichborithk.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
